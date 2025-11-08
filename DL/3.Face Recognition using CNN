@@ -1,0 +1,19 @@
+#3.Face Recognition using CNN
+import cv2, matplotlib.pyplot as plt, urllib.request, numpy as np
+url = "https://imgs.search.brave.com/vr-FXtpp6Tx9H5X5sDPKlnI-QoNxylYh7_NG4RsbXos/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZnJlZXBpay5jb20v/cHJlbWl1bS1waG90/by9ncm91cC1kaXZl/cnNpdHktcGVvcGxl/LXRvZ2V0aGVyLXNl/dC1zdHVkaW8taXNv/bGF0ZWRfNTM4NzYt/Mjk4NTMuanBnP3Nl/bXQ9YWlzX2h5YnJp/ZCZ3PTc0MCZxPTgw"
+
+# Read image from URL
+resp = urllib.request.urlopen(url)
+img = np.asarray(bytearray(resp.read()), dtype=np.uint8)
+img = cv2.imdecode(img, cv2.IMREAD_COLOR)
+
+# Face detection
+face = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+for (x,y,w,h) in face.detectMultiScale(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY),1.1,5):
+    cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
+
+# Display result
+plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+plt.axis('off')
+plt.title('Face Detection Result')
+plt.show()
