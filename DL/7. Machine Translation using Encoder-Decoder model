@@ -1,0 +1,13 @@
+#7 Machine Translation using Encoder-Decoder model
+from transformers import M2M100ForConditionalGeneration, M2M100Tokenizer
+import torch
+
+model_name = "gopi30/english-to-tamil-stage4"
+tok = M2M100Tokenizer.from_pretrained(model_name)
+model = M2M100ForConditionalGeneration.from_pretrained(model_name).to("cuda" if torch.cuda.is_available() else "cpu")
+
+for text in ["The machine translation model is very powerful.", "How are you doing today?"]:
+    tok.src_lang = "en"
+    ids = model.generate(**tok(text, return_tensors="pt").to(model.device),
+                         forced_bos_token_id=tok.get_lang_id("ta"), max_length=128)
+    print(f"English: {text}\nTamil: {tok.decode(ids[0], skip_special_tokens=True)}\n{'-'*30}")
