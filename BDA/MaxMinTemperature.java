@@ -39,4 +39,29 @@ public class MaxMinTemperature {
             }
 
             context.write(new Text("Maximum Temperature:"), new IntWritable(maxTemp));
-            context.write(new Text("Minimum Temperature:"), n
+            context.write(new Text("Minimum Temperature:"), new IntWritable(minTemp));
+        }
+    }
+
+    // Main Method
+    public static void main(String[] args) throws Exception {
+        if (args.length != 2) {
+            System.err.println("Usage: MaxMinTemperature <input path> <output path>");
+            System.exit(-1);
+        }
+
+        Configuration conf = new Configuration();
+        Job job = Job.getInstance(conf, "Max and Min Temperature");
+        job.setJarByClass(MaxMinTemperature.class);
+        job.setMapperClass(TempMapper.class);
+        job.setReducerClass(TempReducer.class);
+
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}
