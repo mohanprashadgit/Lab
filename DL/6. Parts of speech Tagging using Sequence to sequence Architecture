@@ -1,0 +1,13 @@
+# 6 Parts of speech Tagging using Sequence to sequence Architecture 
+import torch, torch.nn as nn, torch.optim as optim
+inp, out = ["She","reads","a","book"], ["PRP","VBZ","DT","NN"]
+iv, ov = list(set(inp)), list(set(out))
+x, y = torch.tensor([iv.index(w) for w in inp]), torch.tensor([ov.index(t) for t in out])
+embed, gru, fc = nn.Embedding(len(iv),32), nn.GRU(32,32), nn.Linear(32,len(ov))
+opt, loss_fn = optim.Adam(list(embed.parameters())+list(gru.parameters())+list(fc.parameters()),lr=0.01), nn.CrossEntropyLoss()
+for e in range(80):
+    opt.zero_grad(); emb=embed(x.view(len(x),1)); o,_=gru(emb); o=fc(o.squeeze(1))
+    loss=loss_fn(o,y); loss.backward(); opt.step()
+    if (e+1)%20==0: print(f"Ep{e+1}: Loss={loss.item():.3f}")
+t=torch.tensor([iv.index(w) for w in inp]); o,_=gru(embed(t.view(len(t),1))); o=fc(o.squeeze(1))
+print("Pred:",[ov[i] for i in o.argmax(1).tolist()])
