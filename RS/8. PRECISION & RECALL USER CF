@@ -1,0 +1,9 @@
+# 8.Precision & Recall for User CF
+from sklearn.metrics import precision_score, recall_score
+import numpy as np
+
+a = np.array([[1,0,1,0],[0,1,1,1]])
+p = np.array([[1,0,0,0],[0,1,1,0]])
+
+for i in range(len(a)):
+    print(f"User {i+1}: Precision={precision_score(a[i],p[i]):.2f}, Recall={recall_score(a[i],p[i]):.2f}")
