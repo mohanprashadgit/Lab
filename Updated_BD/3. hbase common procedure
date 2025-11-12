@@ -1,0 +1,113 @@
+Practical: Data Aggregation using Hive and HBase
+Aim:
+
+To start Hadoop and HBase services, create tables, and perform data aggregation.
+
+Materials / Software Required:
+
+Hadoop installed and configured
+
+HBase installed
+
+Hive installed (or Hive on HBase)
+
+Java installed and environment variables set
+
+Step-by-Step Procedure
+Step 1: Start Hadoop Services
+
+Open terminal (CMD / PowerShell / Linux Terminal).
+
+Start HDFS daemons:
+
+start-dfs.sh
+
+
+Start YARN daemons:
+
+start-yarn.sh
+
+
+Check running services:
+
+jps
+
+
+Expected output:
+
+NameNode
+DataNode
+SecondaryNameNode
+ResourceManager
+NodeManager
+
+Step 2: Start HBase Services
+
+Start HBase daemons:
+
+start-hbase.sh
+
+
+Check HBase daemons:
+
+jps
+
+
+Expected output includes:
+
+HMaster
+HRegionServer
+
+Step 3: Open HBase Shell
+hbase shell
+
+
+Inside shell, you can create tables and insert data:
+
+create 'student', 'info'
+put 'student', '1', 'info:name', 'Ram'
+put 'student', '1', 'info:marks', '80'
+put 'student', '2', 'info:name', 'John'
+put 'student', '2', 'info:marks', '70'
+put 'student', '3', 'info:name', 'Anita'
+put 'student', '3', 'info:marks', '90'
+
+
+View data:
+
+scan 'student'
+
+Step 4: Aggregate Data in HBase
+
+HBase is NoSQL, so for aggregation you have two options:
+
+Option 1 — Using Hive on HBase
+
+Create a Hive table linked to HBase:
+
+CREATE EXTERNAL TABLE hbase_student(
+  rowkey STRING,
+  name STRING,
+  marks INT
+)
+STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+WITH SERDEPROPERTIES ("hbase.columns.mapping" = ":key,info:name,info:marks")
+TBLPROPERTIES ("hbase.table.name" = "student");
+
+
+Run aggregation queries in Hive:
+
+-- Total marks
+SELECT SUM(marks) FROM hbase_student;
+
+-- Average marks
+SELECT AVG(marks) FROM hbase_student;
+
+-- Maximum marks
+SELECT MAX(marks) FROM hbase_student;
+
+-- Minimum marks
+SELECT MIN(marks) FROM hbase_student;
+
+-- Count of students
+SELECT COUNT(*) FROM hbase_student;
