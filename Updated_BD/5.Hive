@@ -1,0 +1,98 @@
+Practical: Hive Table Creation and Data Aggregation
+Aim:
+
+To create Hive tables, insert data, and perform aggregation queries.
+
+Requirements:
+
+Hadoop installed and running
+
+Hive installed
+
+Sample data file (optional, e.g., student.txt)
+
+Step-by-Step Procedure
+Step 1: Start Hadoop Services
+
+Open CMD / PowerShell / Terminal.
+
+Start HDFS daemons:
+
+start-dfs.sh
+
+
+Start YARN daemons:
+
+start-yarn.sh
+
+
+Verify daemons:
+
+jps
+
+
+Expected output:
+
+NameNode
+DataNode
+SecondaryNameNode
+ResourceManager
+NodeManager
+
+Step 2: Start Hive
+hive
+
+
+You should enter the Hive CLI.
+
+Step 3: Create a Database
+CREATE DATABASE librarydb;
+USE librarydb;
+
+Step 4: Create a Table
+CREATE TABLE student(
+  rollno INT,
+  name STRING,
+  marks INT
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',';
+
+Step 5: Insert Data into Table
+
+Option 1: Manual insert
+
+INSERT INTO student VALUES (1, 'Ram', 80);
+INSERT INTO student VALUES (2, 'John', 70);
+INSERT INTO student VALUES (3, 'Anita', 90);
+
+
+Option 2: Load from local file
+
+LOAD DATA LOCAL INPATH '/home/user/student.txt' INTO TABLE student;
+
+
+student.txt content example:
+
+1,Ram,80
+2,John,70
+3,Anita,90
+
+Step 6: View Data
+SELECT * FROM student;
+
+Step 7: Perform Aggregation
+-- Total marks
+SELECT SUM(marks) FROM student;
+
+-- Average marks
+SELECT AVG(marks) FROM student;
+
+-- Maximum marks
+SELECT MAX(marks) FROM student;
+
+-- Minimum marks
+SELECT MIN(marks) FROM student;
+
+-- Count of students
+SELECT COUNT(*) FROM student;
